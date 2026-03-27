@@ -29,9 +29,17 @@
             </div>
 
             <nav class="nav-menu">
-                <a href="#" class="nav-item active">
+                <a href="#" class="nav-item active" onclick="navigateTo('dashboard', event)">
                     <span class="icon">🏠</span>
                     <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" onclick="navigateTo('tacografo', event)">
+                    <span class="icon">🧭</span>
+                    <span>Tacógrafo</span>
+                </a>
+                <a href="#" class="nav-item" onclick="navigateTo('abastecimento', event)">
+                    <span class="icon">⛽</span>
+                    <span>Abastecimento</span>
                 </a>
             </nav>
 
@@ -45,7 +53,7 @@
 
         <header class="top-bar">
             <div class="page-title">
-                <h1>Dashboard Financeiro</h1>
+                <h1 id="page-title">Dashboard Financeiro</h1>
                 <p id="current-date"></p>
             </div>
             <div class="user-profile">
@@ -54,7 +62,7 @@
             </div>
         </header>
 
-        <section id="dashboard-view" class="view-section">
+        <section id="dashboard-view" class="view-section active">
 
             <div class="card config-card">
                 <div class="card-header">
@@ -141,6 +149,61 @@
             </div>
 
         </section>
+
+        <section id="tacografo-view" class="view-section">
+
+            <div class="card table-card">
+                <div class="card-header">
+                    <h2>🧭 Controle de Tacógrafo</h2>
+                    <button class="btn btn-primary" onclick="showTacografoForm()">+ Novo Registro</button>
+                </div>
+                <div class="table-responsive">
+                    <table id="tacografo-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Placa</th>
+                                <th>Motorista</th>
+                                <th>KM Inicial</th>
+                                <th>KM Final</th>
+                                <th>KM Rodado</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tacografo-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="abastecimento-view" class="view-section">
+
+            <div class="card table-card">
+                <div class="card-header">
+                    <h2>⛽ Controle de Abastecimento</h2>
+                    <button class="btn btn-primary" onclick="showAbastecimentoForm()">+ Novo Registro</button>
+                </div>
+                <div class="table-responsive">
+                    <table id="abastecimento-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Placa</th>
+                                <th>KM</th>
+                                <th>Litros</th>
+                                <th>Valor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="abastecimento-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
     </main>
 </div>
 
@@ -176,6 +239,86 @@
             <div class="form-actions">
                 <button type="button" class="btn btn-secondary" onclick="hideTransactionForm()">Cancelar</button>
                 <button type="submit" class="btn btn-primary" id="save-btn">Salvar Lançamento</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="tacografo-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="tacografo-modal-title">Novo Registro de Tacógrafo</h2>
+            <span class="close-modal" onclick="hideTacografoForm()">&times;</span>
+        </div>
+        <form id="tacografo-form">
+            <input type="hidden" id="tacografo-id">
+            <div class="form-group">
+                <label for="tacografo-data">Data</label>
+                <input type="date" id="tacografo-data" required>
+            </div>
+            <div class="form-group">
+                <label for="tacografo-placa">Placa</label>
+                <input type="text" id="tacografo-placa" placeholder="Ex: ABC-1234" required>
+            </div>
+            <div class="form-group">
+                <label for="tacografo-motorista">Motorista</label>
+                <input type="text" id="tacografo-motorista" placeholder="Nome do Motorista" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tacografo-km-inicial">KM Inicial</label>
+                    <input type="number" id="tacografo-km-inicial" step="1" placeholder="10000" required>
+                </div>
+                <div class="form-group">
+                    <label for="tacografo-km-final">KM Final</label>
+                    <input type="number" id="tacografo-km-final" step="1" placeholder="10150" required>
+                </div>
+            </div>
+            <div class="form-group-checkbox">
+                <input type="checkbox" id="tacografo-inoperante" onchange="toggleTacografoInoperante()">
+                <label for="tacografo-inoperante">Tacografo inoperante</label>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="hideTacografoForm()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar Registro</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="abastecimento-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="abastecimento-modal-title">Novo Registro de Abastecimento</h2>
+            <span class="close-modal" onclick="hideAbastecimentoForm()">&times;</span>
+        </div>
+        <form id="abastecimento-form">
+            <input type="hidden" id="abastecimento-id">
+            <div class="form-group">
+                <label for="abastecimento-data">Data</label>
+                <input type="date" id="abastecimento-data" required>
+            </div>
+            <div class="form-group">
+                <label for="abastecimento-placa">Placa</label>
+                <input type="text" id="abastecimento-placa" placeholder="Ex: ABC-1234" required>
+            </div>
+            <div class="form-group">
+                <label for="abastecimento-quilometragem">Quilometragem</label>
+                <input type="number" id="abastecimento-quilometragem" step="1" placeholder="10150" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="abastecimento-litros">Quantidade (Litros)</label>
+                    <input type="number" id="abastecimento-litros" step="0.01" placeholder="50.5" required>
+                </div>
+                <div class="form-group">
+                    <label for="abastecimento-valor">Valor Total (R$)</label>
+                    <input type="number" id="abastecimento-valor" step="0.01" placeholder="250.00" required>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="hideAbastecimentoForm()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar Registro</button>
             </div>
         </form>
     </div>
